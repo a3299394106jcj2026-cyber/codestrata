@@ -1,0 +1,11 @@
+node_modules/
+test-results/
+playwright-report/
+.playwright-cli/
+work/
+outputs/
+*.log
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc

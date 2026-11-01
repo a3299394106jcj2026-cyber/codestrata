@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="代码考古局 CodeStrata：把 GitHub 仓库历史变成可探索的时间地层，并生成二次开发考古报告。">
+  <title>代码考古局 CodeStrata</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles/base.css">
+  <link rel="stylesheet" href="./styles/excavation.css">
+  <link rel="stylesheet" href="./styles/report.css">
+</head>
+<body data-view="landing">
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <header class="topbar">
+    <button id="home-button" class="brand" type="button" aria-label="返回 CodeStrata 首页">
+      <span class="brand__mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="brand__copy">
+        <strong>代码考古局</strong>
+        <small>CODESTRATA</small>
+      </span>
+    </button>
+
+    <form id="repo-form" class="repo-form" novalidate>
+      <span class="repo-form__icon" aria-hidden="true"></span>
+      <input id="repo-input" type="text" inputmode="url" autocomplete="off" placeholder="owner/repo 或 GitHub 仓库地址" aria-label="GitHub 仓库地址">
+      <button id="repo-submit" type="submit">开始发掘</button>
+    </form>
+
+    <div class="topbar__actions">
+      <span id="quota-status" class="quota-status">限额状态未读取</span>
+      <button class="quiet-button" type="button" data-demo>离线样本</button>
+    </div>
+  </header>
+
+  <div id="repo-status" class="status-slot" aria-live="polite"></div>
+
+  <main id="main-content">
+    <section id="landing-view" class="landing">
+      <div class="landing__story">
+        <div class="site-label"><span></span>遗址 001 · OPEN SOURCE MEMORY</div>
+        <h1>一间仓库的<br><em>时间地层</em></h1>
+        <p class="landing__lead">GitHub 不只有代码，也保存一个项目如何开始、加速、停滞和被人接手的痕迹。选择一层，阅读它留下的开发证据。</p>
+        <div class="landing__actions">
+          <button class="primary-button" type="button" data-demo>载入离线样本 <span>↗</span></button>
+          <button id="method-button" class="text-link" type="button">查看判断方法</button>
+        </div>
+        <div class="sample-meta" aria-label="内置离线样本信息">
+          <div class="sample-meta__main">
+            <span>内置历史快照</span>
+            <strong>satnaing/shadcn-admin</strong>
+          </div>
+          <div><span>许可证</span><strong>MIT</strong></div>
+          <div><span>跨度</span><strong>30 MONTHS</strong></div>
+          <div><span>提交</span><strong>323 SAMPLES</strong></div>
+        </div>
+      </div>
+
+      <section class="landing-exhibit" aria-label="时间地层概念示意">
+        <div class="exhibit-ruler" aria-hidden="true">
+          <span>2026.09</span><span>2026.01</span><span>2025.05</span><span>2024.09</span><span>2024.01</span>
+        </div>
+        <div class="exhibit-core" role="img" aria-label="由活跃、断层和版本记录堆叠成的仓库地层剖面示意">
+          <div class="core-orbit"></div>
+          <div class="core">
+            <span class="core__layer core__layer--top"></span>
+            <span class="core__layer core__layer--clay"></span>
+            <span class="core__layer core__layer--sand"></span>
+            <span class="core__layer core__layer--olive"></span>
+            <span class="core__layer core__layer--clay"></span>
+            <span class="core__layer core__layer--olive"></span>
+            <span class="core__layer core__layer--sand"></span>
+            <span class="core__layer core__layer--base"></span>
+          </div>
+        </div>
+        <div class="exhibit-caption">
+          <strong>地层剖面</strong>
+          <p>提交形成沉积，停更留下断层，Release 标记开发周期。</p>
+        </div>
+        <span class="exhibit-foot">EXHIBIT CS-001 · SNAPSHOT 2026.11.01</span>
+      </section>
+
+      <section id="method-note" class="method-note" aria-label="考古判断方法">
+        <div><span>01</span><strong>读取公开事实</strong><p>许可证、提交、Release、贡献者与项目体量。</p></div>
+        <div><span>02</span><strong>识别时间结构</strong><p>按 UTC 月份聚合，标记活跃峰、停更断层和版本层。</p></div>
+        <div><span>03</span><strong>给出复用判断</strong><p>把可验证事实与二次开发建议分开呈现，并保留来源。</p></div>
+      </section>
+    </section>
+
+    <section id="workspace-view" class="workspace" hidden>
+      <h1 class="visually-hidden">GitHub 仓库考古工作台</h1>
+      <div class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <div id="repo-source" class="source-badge">等待数据</div>
+            <div class="workspace-breadcrumb"><span>公开仓库分析</span><span id="source-note">正在等待数据</span></div>
+          </div>
+          <div class="workspace-actions">
+            <button id="refresh-button" class="secondary-button" type="button">重新发掘</button>
+            <button id="report-button" class="primary-button" type="button" disabled>生成考古报告</button>
+          </div>
+        </header>
+
+        <article id="repo-profile" class="repo-profile"></article>
+        <div class="assessment-grid">
+          <section id="repo-risk" class="panel inspector-section" aria-label="维护风险"></section>
+          <section id="repo-recommendation" class="panel inspector-section" aria-label="二次开发判断"></section>
+        </div>
+        <section id="repo-files" class="panel repo-files" aria-label="仓库根目录"></section>
+        <section id="repo-strata" class="panel strata-panel" aria-label="时间地层"></section>
+
+        <div class="record-grid">
+          <section id="repo-commits" class="panel commits-panel" aria-label="近期提交"></section>
+          <section id="repo-releases" class="panel releases-panel" aria-label="版本记录"></section>
+        </div>
+
+        <section id="repo-contributors" class="panel contributors-panel" aria-label="贡献者构成"></section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>CODE STRATA · PUBLIC GITHUB METADATA</span>
+    <span>历史不是统计表，而是一座可以层层阅读的遗址。</span>
+  </footer>
+
+  <dialog id="report-dialog" class="report-dialog" aria-labelledby="report-dialog-title">
+    <div class="report-dialog__header">
+      <div>
+        <p>CODESTRATA REPORT</p>
+        <h2 id="report-dialog-title">二次开发考古报告</h2>
+      </div>
+      <button id="report-close" class="icon-button" type="button" aria-label="关闭报告">×</button>
+    </div>
+    <pre id="report-content" class="report-content"></pre>
+    <div class="report-dialog__footer">
+      <p id="copy-feedback" aria-live="polite">报告只包含公开元数据，不读取仓库源码。</p>
+      <button id="report-copy" class="primary-button" type="button">复制 Markdown</button>
+    </div>
+  </dialog>
+
+  <dialog id="method-dialog" class="report-dialog method-dialog" aria-labelledby="method-dialog-title">
+    <div class="report-dialog__header">
+      <div>
+        <p>CODESTRATA METHOD</p>
+        <h2 id="method-dialog-title">CodeStrata 如何判断</h2>
+      </div>
+      <button id="method-close" class="icon-button" type="button" aria-label="关闭判断方法">×</button>
+    </div>
+    <div class="method-dialog__body">
+      <section>
+        <h3>会判断什么</h3>
+        <dl>
+          <div><dt>项目用途</dt><dd>GitHub 简介与 Topics 所描述的仓库目标。</dd></div>
+          <div><dt>复用许可</dt><dd>许可证类型及二次开发时需要保留的约束。</dd></div>
+          <div><dt>维护结构</dt><dd>贡献者集中度、最近推送时间和停更风险。</dd></div>
+          <div><dt>项目体量</dt><dd>仓库大小与根目录结构所反映的接手成本。</dd></div>
+          <div><dt>活跃节奏</dt><dd>UTC 月度提交、活跃峰、断层与 Release。</dd></div>
+        </dl>
+      </section>
+      <section>
+        <h3>不会判断什么</h3>
+        <ul>
+          <li>不把 Stars 或单一指标当作代码质量总分。</li>
+          <li>不执行项目测试，也不声称已经验证安全性或可运行性。</li>
+          <li>不替代律师对许可证原文的法律判断。</li>
+          <li>不读取、复制或分发仓库源码内容。</li>
+        </ul>
+      </section>
+      <section class="method-dialog__legend">
+        <h3>判断标签</h3>
+        <p><strong>宜</strong> 当前公开证据支持作为复用基线。</p>
+        <p><strong>慎</strong> 先核对关键模块或维护状态，再决定复用。</p>
+        <p><strong>险</strong> 存在许可证、维护集中或停更等明显风险，优先抽取结构。</p>
+      </section>
+      <p class="method-dialog__source">数据来自公开 GitHub API；提交历史为有界采样，快照时间与数据来源会随结果一起展示。</p>
+    </div>
+  </dialog>
+
+  <noscript>CodeStrata 需要启用 JavaScript 才能读取并展示公开 GitHub 元数据。</noscript>
+  <script type="module" src="./scripts/main.js"></script>
+</body>
+</html>
